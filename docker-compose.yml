@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  cassandra:
+    image: cassandra:4.0.1
+    mem_limit: 2g
+    container_name: 'cassandra'
+    hostname: 'cassandra'
+    healthcheck:
+      test: ["CMD-SHELL", "cqlsh", "-e", "describe keyspaces" ]
+      interval: 5s
+      timeout: 5s
+      retries: 60
+    ports:
+      - 9042
+      - 7199
+    volumes:
+      # map trigger libraries and conf
+      - ./target/cassandra-itrigger-issue-1.0.0-SNAPSHOT.jar:/etc/cassandra/triggers/my-trigger.jar
+    environment:
+      - CASSANDRA_CLUSTER_NAME=test
+      - CASSANDRA_DC=DC1
+      - CASSANDRA_RACK=rack1
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+      - CASSANDRA_NUM_TOKENS=128
