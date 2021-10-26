@@ -56,7 +56,9 @@ public class MyTrigger implements ITrigger {
                             Cell cell = cells.next();
                             if (!cell.isTombstone()) {
                                 LOG.info("{} => {}", columnDef.name.toString(),
-                                        CassandraTypeHelper.toJava(columnDef.type, cell));
+                                        CassandraTypeHelper.toJava(columnDef.type,
+                                                row.getComplexColumnData(columnDef),
+                                                cell));
                             }
                         }
                     }
