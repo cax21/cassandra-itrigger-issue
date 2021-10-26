@@ -15,7 +15,7 @@ services:
       - 9042
       - 7199
     volumes:
-      # map trigger libraries and conf
+      # map trigger libraries
       - ./target/cassandra-itrigger-issue-1.0.0-SNAPSHOT.jar:/etc/cassandra/triggers/my-trigger.jar
     environment:
       - CASSANDRA_CLUSTER_NAME=test
