@@ -17,8 +17,7 @@ import java.util.*;
 public class CassandraTypeHelper {
     private static final Logger LOG = LoggerFactory.getLogger(CassandraTypeHelper.class);
 
-    static Object toJavaCollection(AbstractType<?> type, ValueAccessor accessor, Object value, ByteBuffer buffer,
-                                   ComplexColumnData ccd) {
+    static Object toJavaCollection(AbstractType<?> type, ComplexColumnData ccd) {
         if (type instanceof  MapType) {
             /*
             This code crashes
@@ -70,7 +69,7 @@ public class CassandraTypeHelper {
             LOG.info("collection type {} ccd {} accessor {} value {} buffer {}={}",
                     type, complexColumnData, cell.accessor(), cell.value(), cell.buffer(),
                     type.getString(cell.buffer().array(), ByteArrayAccessor.instance));
-            return toJavaCollection(type, cell.accessor(), cell.value(), cell.buffer(), complexColumnData);
+            return toJavaCollection(type, complexColumnData);
         }
         return type.getString(cell.buffer());
     }
