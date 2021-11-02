@@ -7,8 +7,8 @@ echo "creating table 'alarms'"
 docker exec -it cassandra cqlsh -e "create table if not exists test.timestamps (
 							id uuid,
 							stamps map<text,bigint>,
-							times list<frozen<map<text,bigint>>>
-              primary key(id));"
+							times list<frozen<map<text,bigint>>>,
+							primary key(id));"
 
 echo "creating trigger"
 docker exec -it cassandra cqlsh -e "create trigger if not exists my_trigger on test.timestamps using 'cassandra.issues.trigger.MyTrigger';"
