@@ -31,7 +31,7 @@ public class CassandraTypeHelper {
             AbstractType<?> valuesType = mapType.getValuesType();
             TypeSerializer<?> valuesSer = valuesType.getSerializer();
             List<ByteBuffer> bbList = mapType.serializedValues(ccd.iterator());
-            LOG.info("Number of bytesBuffer {}", bbList.size());
+            LOG.info("Number of bytesBuffer in map {}", bbList.size());
             Map<Object, Object> m = new HashMap<>();
             int i = 0;
             while (i < bbList.size()) {
@@ -41,6 +41,25 @@ public class CassandraTypeHelper {
                 m.put(keysSer.deserialize(kbb), valuesSer.deserialize(vbb));
             }
             return m;
+        } else if (type instanceof ListType) {
+            // let's consider the only case of time_stamps list<frozen<map<text,bigint>>>
+            ListType listType = (ListType) type;
+            AbstractType elemsType = listType.getElementsType();
+            TypeSerializer<?> elemsSer = elemsType.getSerializer();
+            List<ByteBuffer> bbList = listType.serializedValues(ccd.iterator());
+            LOG.info("Number of bytesBuffer in list {}", bbList.size());
+            List ret = new ArrayList();
+            int i = 0;
+            while (i < bbList.size()) {
+                ByteBuffer bb = bbList.get(i++);
+                LOG.info("Index[{}] Element {}", i, bb);
+                ret.add(elemsSer.deserialize(bb));
+            }
+//            ListSerializer listSerializer = (ListSerializer) type.getSerializer();
+//            MapSerializer mapSerializer = (MapSerializer) listSerializer.elements;
+//            Map<String, Long> m = (Map<String, Long>) mapSerializer.deserialize(buffer);
+//            ret.add(m);
+            return ret;
         }
         throw new RuntimeException("Not supported so far!");
     }
